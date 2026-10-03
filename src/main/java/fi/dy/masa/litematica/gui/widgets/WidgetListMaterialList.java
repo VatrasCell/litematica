@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -40,8 +41,23 @@ public class WidgetListMaterialList extends WidgetListBase<MaterialListEntry, Wi
     @Override
     public void drawContents(GuiContext ctx, int mouseX, int mouseY, float partialTicks)
     {
+        // Since MC 26.x, char events are only delivered while text input is active (SDL),
+        // which normally only happens when an EditBox is focused. Keep it active while the
+        // search bar is closed, so that typing can open it (and start filtering) right away.
+        if (this.widgetSearchBar != null && this.widgetSearchBar.isSearchOpen() == false)
+        {
+            Minecraft.getInstance().textInputManager().startTextInput(this);
+        }
+
         super.drawContents(ctx, mouseX, mouseY, partialTicks);
         lastScrollbarPosition = this.scrollBar.getValue();
+    }
+
+    @Override
+    public void removed()
+    {
+        super.removed();
+        Minecraft.getInstance().textInputManager().stopTextInput(this);
     }
 
     @Override
