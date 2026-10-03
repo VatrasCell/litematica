@@ -200,13 +200,10 @@ public class GuiMaterialList extends GuiListBase<MaterialListEntry, WidgetMateri
         }
         else
         {
-            String label = type.getDisplayName();
+            String label = type == ButtonListener.Type.LIST_TYPE
+                           ? type.getDisplayName(this.materialList.getMaterialListType().getDisplayName())
+                           : type.getDisplayName();
             String hover = type.getHoverText();
-
-            if (type == ButtonListener.Type.LIST_TYPE)
-            {
-                label = type.getDisplayName(this.materialList.getMaterialListType().getDisplayName());
-            }
 
             buttonWidth = this.getStringWidth(label) + 10;
 
